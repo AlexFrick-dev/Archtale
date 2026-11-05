@@ -1,0 +1,27 @@
+{
+  "name": "archtale",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "archtale": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx --test src/*.test.ts",
+    "demo": "tsx src/cli.ts generate demo-shop"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "fast-xml-parser": "^5.12.0",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
