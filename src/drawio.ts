@@ -7,7 +7,7 @@ const HEIGHT = 60;
 const GAP = 120;
 
 const NODE_STYLE = "rounded=1;whiteSpace=wrap;html=1;";
-const EDGE_STYLE = "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;";
+const EDGE_STYLE = "rounded=0;html=1;endArrow=block;";
 const ANCHOR_STYLE = "group;";
 
 export const DEFAULT_TYPE = "default";
