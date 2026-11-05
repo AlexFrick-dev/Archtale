@@ -2,6 +2,7 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Command } from "commander";
+import { CARD, CARD_FILE } from "./card.js";
 import { check, type SourceFile } from "./check.js";
 import { DEFAULT_TYPE, mergeDrawioSvg, newFigureSvg, readFigure, type Figure } from "./drawio.js";
 import { groupIntoDiagrams, parseDiagramTags, parseMarkdown, type Block } from "./parse.js";
@@ -106,6 +107,13 @@ async function generate(dir: string, options: { drawio?: string; strict?: boolea
       throw new Error(`${block.file}:${block.line}: схема «${block.id}» занимает тот же файл, что и схема из ${other.file}:${other.line}`);
     }
     targets.set(out, block);
+  }
+
+  // Карточка создаётся один раз: готовая принадлежит человеку.
+  const card = path.join(dir, CARD_FILE);
+  if ((await readIfExists(card)) === undefined) {
+    await writeFile(card, CARD);
+    console.log(`создана карточка: ${card}`);
   }
 
   let pending = 0;
