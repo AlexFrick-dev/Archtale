@@ -1,0 +1,55 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" style="background: transparent; background-color: transparent; color-scheme: light;" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="122px" height="80px" viewBox="0 0 122 80" id="ge-svg-aOKZIrLbZz0arfL8UOpr" content="&lt;mxfile&gt;&lt;diagram id=&quot;file&quot; name=&quot;file&quot;&gt;zZVRb5swEMc/DVL3ECmBhpDHhrZZle0pmjrtpXKwA+4Mx4wZyT79ztguOMm0Vpu0GQns3x13x/8cJ4jS8rCWpC4+AmUiCKf0EES3QRgu5yHeNTgaEC0SA3LJqUHTAWz5D2bgzNGWU9ZYZpACEIrXPsygqlimPEakhM5324Pws9YkZ2dgmxHBvPc0feRUFYYm4WLg7xnPC5d5Fi+NpSTO2QZuCkKhG6HoLohSCaDMrDykTGjtfF3uf2F9KUyySr3mhacvz4vl7tNDsklT2HxeTzbJ4yQ5j2IDN+roNMDKaz2lkLVl77fqCq7YtiaZ5h12HlmhSoGrGU530FaU0Q87B/ZciBQEyD5itJ/rS3Oo1IibgbxREr6ykSXuB1pMdd+JaG11FjCp2GH0BVaENYOSKXlEl2LUJ7cLu6GnM9coG2USLmyT7daN7ZLYLZW/hB5Ux4kV/g1NWL6mCdJIiovp7/U/kTvtxz+U+zr8j+S+8Ms5lxu/TvmaXpLc162Cip2IbxERPK9wmWFGhnyl9eN4ytxYQ8kp1alXfpsvqB8LXVdTk8orOP7W6oNklZnEN2iU+e4KNUaRpu7xro/pfHGWm+c8I7XigCHnLgNKa5I4n7/T9vi069d/3HVcDqdobxv9FUV3PwE=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <style type="text/css">
+        @supports (color: light-dark(#000, #fff)) { #ge-svg-aOKZIrLbZz0arfL8UOpr { --ge-adaptive-fg: light-dark(#000000, var(--ge-light-color, #ffffff)); } }
+    </style>
+    <defs/>
+    <g>
+        <g data-cell-id="0">
+            <g data-cell-id="1">
+                <g data-cell-id="_Zj79bUI8KCCoKXG-K8W-8">
+                    <g transform="translate(0.5,0.5)">
+                        <path d="M 0 0 L 120 0 L 120 66.3 Q 90 45.24 60 66.3 Q 30 87.36 0 66.3 L 0 11.7 Z" fill="#f5f5f5" stroke="#666666" stroke-miterlimit="10" pointer-events="all" style="fill: light-dark(rgb(245, 245, 245), rgb(26, 26, 26)); stroke: light-dark(rgb(102, 102, 102), rgb(149, 149, 149));"/>
+                    </g>
+                </g>
+                <g data-cell-id="_Zj79bUI8KCCoKXG-K8W-9">
+                    <g transform="translate(0.5,0.5)">
+                        <rect x="0" y="0" width="120" height="42" fill="#cccccc" stroke="#666666" pointer-events="all" style="fill: light-dark(rgb(204, 204, 204), rgb(62, 62, 62)); stroke: light-dark(rgb(102, 102, 102), rgb(149, 149, 149));"/>
+                    </g>
+                </g>
+                <g data-cell-id="_Zj79bUI8KCCoKXG-K8W-1">
+                    <g>
+                        <rect x="30" y="0" width="60" height="42" fill="none" stroke="none" pointer-events="all"/>
+                    </g>
+                    <g>
+                        <g>
+                            <switch>
+                                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 58px; height: 1px; padding-top: 21px; margin-left: 31px;">
+                                        <div style="box-sizing: border-box; font-size: 0; text-align: center; color: #000000; ">
+                                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: var(--ge-adaptive-fg, #000000); line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                                <span style="color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));">
+                                                    %caption%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </foreignObject>
+                                <text x="60" y="25" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle" style="fill: var(--ge-adaptive-fg, #000000);">
+                                    %caption%
+                                </text>
+                            </switch>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://www.drawio.com/doc/faq/svg-export-text-problems" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Text is not SVG - cannot display
+            </text>
+        </a>
+    </switch>
+</svg>
