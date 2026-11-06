@@ -43,7 +43,7 @@ markdown "Markdown-документация" [file]
 для draw.io, в котором хранится ручная раскладка.
 
 ```model
-diagram-svg "Файл схемы" [file]
+diagram-svg "Файл схемы" [diagram-svg]
 ```
 
 Файл типа в `archtale-types/` задаёт фигуру для всех элементов своего типа.
