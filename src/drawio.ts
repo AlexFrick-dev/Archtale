@@ -1,6 +1,6 @@
 import { inflateRawSync } from "node:zlib";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
-import { relationId, type Block, type Element } from "./parse.js";
+import { DEFAULT_LINK_TYPE, relationId, type Block, type Element } from "./parse.js";
 
 const WIDTH = 140;
 const HEIGHT = 60;
@@ -39,6 +39,8 @@ export interface Figure {
 
 export interface MergeOptions {
   figures?: Map<string, Figure>;
+  /** Стиль новых стрелок; уже нарисованные его не получают. */
+  edgeStyle?: string;
 }
 
 const escapeAttr = (text: string) =>
@@ -203,6 +205,30 @@ export function newFigureSvg(type: string): string {
     [ATTRS]: { id: "shape", value: "%caption%", style: NODE_STYLE, vertex: "1", parent: "1" },
   };
   return serialize(emptyFile(type, [shape]));
+}
+
+/** Файл стиля стрелок: одна стрелка без концов, дальше её настраивает человек. */
+export function newLinkSvg(): string {
+  const point = (x: number, as: string) => ({ mxPoint: [], [ATTRS]: { x: String(x), y: "30", as } });
+  const link = {
+    mxCell: [
+      {
+        mxGeometry: [point(0, "sourcePoint"), point(WIDTH, "targetPoint")],
+        [ATTRS]: { relative: "1", as: "geometry" },
+      },
+    ],
+    // Подпись-образец: без неё в draw.io нечего настраивать. На схемы текст не переносится.
+    [ATTRS]: { id: "link", value: "подпись", style: EDGE_STYLE, edge: "1", parent: "1" },
+  };
+  return serialize(emptyFile(DEFAULT_LINK_TYPE, [link]));
+}
+
+/** Берёт из файла только стиль: подпись и концы стрелки задаёт модель. */
+export function readLinkStyle(svg: string): string {
+  const root: XmlNode[] = pageRoot(readFile(svg)).root;
+  const edges = root.filter((c) => cellAttrs(c).edge === "1");
+  if (edges.length !== 1) throw new Error(`в файле стиля нужна ровно одна стрелка, найдено: ${edges.length}`);
+  return cellAttrs(edges[0]).style ?? "";
 }
 
 /** Читает файл типа: все ячейки, кроме служебных и слоёв. Габариты — по фигурам верхнего уровня. */
@@ -377,7 +403,7 @@ export function mergeDrawioSvg(block: Block, existing?: string, options: MergeOp
     const id = relationId(relation);
     let cell = byId(id);
     if (!cell) {
-      cell = makeCell(id, { style: EDGE_STYLE, edge: "1", parent: "1" }, { relative: "1" });
+      cell = makeCell(id, { style: options.edgeStyle ?? EDGE_STYLE, edge: "1", parent: "1" }, { relative: "1" });
       cells.push(cell);
     }
     update(cell, id, relation.label ?? "");

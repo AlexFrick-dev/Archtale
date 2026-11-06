@@ -48,6 +48,9 @@ export class ParseError extends Error {
 /** id связи по концепту: явный `[id]` или `from>type>to`. */
 export const relationId = (r: Relation) => r.id ?? [r.from, r.type, r.to].filter(Boolean).join(">");
 
+/** Файл стиля новых стрелок лежит среди файлов типов, поэтому имя занято. */
+export const DEFAULT_LINK_TYPE = "default-link";
+
 const ID = String.raw`[a-z0-9]+(?:-[a-z0-9]+)*`;
 const DIAGRAM_ID = new RegExp(`^${ID}$`);
 const MENTION =String.raw`(${ID})(?:\s+"([^"]*)")?(?:\s+\[([^\]]+)\])?`;
@@ -146,6 +149,23 @@ function parseHeader(meta: string | null | undefined, fileStem: string) {
   return { id: id ?? fileStem, explicit: id !== undefined, extra };
 }
 
+const LOOSE_MENTION = String.raw`(\S+)(?:\s+"[^"]*")?(?:\s+\[[^\]]+\])?`;
+const LOOSE_LINE = new RegExp(
+  String.raw`^(?:\[[^\]]+\]\s+)?${LOOSE_MENTION}(?:\s+-(?:\S*-)?>\s+${LOOSE_MENTION}(?:\s*:.*)?)?$`,
+);
+
+/** Причина ошибки разбора: неверный id, если строка похожа на модель, иначе ожидаемый формат. */
+function explainLine(text: string): string {
+  const ids = LOOSE_LINE.exec(text)?.slice(1).filter(Boolean) ?? [];
+  // Стрелка внутри токена — это пропущенные пробелы, а не плохой id.
+  const bad = ids.filter((id) => !DIAGRAM_ID.test(id) && !id.includes("->"));
+  if (bad.length) {
+    const names = bad.map((id) => `«${id}»`).join(", ");
+    return `id ${names} должен быть в kebab-case: строчная латиница, цифры и дефисы, например order-flow`;
+  }
+  return 'ожидается `id "Имя" [тип]` или `a -тип-> b : подпись`, стрелка отделяется пробелами, тип связи — строчная латиница';
+}
+
 function parseBody(body: string, blockLine: number) {
   const elements = new Map<string, Element>();
   const relations: Relation[] = [];
@@ -169,6 +189,9 @@ function parseBody(body: string, blockLine: number) {
       if (type && !DIAGRAM_ID.test(type)) {
         errors.push(new ParseError(line, `тип «${type}» должен быть в kebab-case`));
       }
+      if (type === DEFAULT_LINK_TYPE) {
+        errors.push(new ParseError(line, `тип «${type}» зарезервирован для стиля стрелок`));
+      }
     };
     const declaration = DECLARATION.exec(text);
     if (declaration) {
@@ -179,7 +202,7 @@ function parseBody(body: string, blockLine: number) {
     }
     const m = RELATION.exec(text);
     if (!m) {
-      errors.push(new ParseError(line, `не разобрать «${text}»`));
+      errors.push(new ParseError(line, `не разобрать «${text}»: ${explainLine(text)}`));
       return;
     }
     const [, relId, from, fromName, fromType, relType, to, toName, toType, label] = m;

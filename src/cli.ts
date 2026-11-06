@@ -4,8 +4,8 @@ import path from "node:path";
 import { Command } from "commander";
 import { CARD, CARD_FILE } from "./card.js";
 import { check, type SourceFile } from "./check.js";
-import { DEFAULT_TYPE, mergeDrawioSvg, newFigureSvg, readFigure, type Figure } from "./drawio.js";
-import { groupIntoDiagrams, parseDiagramTags, parseMarkdown, type Block } from "./parse.js";
+import { DEFAULT_TYPE, mergeDrawioSvg, newFigureSvg, newLinkSvg, readFigure, readLinkStyle, type Figure } from "./drawio.js";
+import { DEFAULT_LINK_TYPE, groupIntoDiagrams, parseDiagramTags, parseMarkdown, type Block } from "./parse.js";
 import { renderInPlace, resolveDrawio } from "./render.js";
 
 async function findMarkdown(dir: string): Promise<string[]> {
@@ -143,16 +143,31 @@ async function generate(dir: string, options: { drawio?: string; strict?: boolea
     }
   }
   if (added.length) console.log(`новые типы: ${added.join(", ")} -> ${typesDir}`);
+
+  const linkFile = path.join(typesDir, `${DEFAULT_LINK_TYPE}${DRAWIO_SVG}`);
+  let linkSvg = await readIfExists(linkFile);
+  if (linkSvg === undefined) {
+    linkSvg = newLinkSvg();
+    await writeFile(linkFile, linkSvg);
+    if (!(await renderInPlace(linkFile, drawio))) pending++;
+  }
+  let edgeStyle: string;
+  try {
+    edgeStyle = readLinkStyle(linkSvg);
+  } catch (error) {
+    throw new Error(`${linkFile}: ${(error as Error).message}`);
+  }
+
   const unused = (await readdir(typesDir))
     .filter((name) => name.endsWith(DRAWIO_SVG))
     .map((name) => name.slice(0, -DRAWIO_SVG.length))
-    .filter((type) => !types.has(type));
+    .filter((type) => !types.has(type) && type !== DEFAULT_LINK_TYPE);
   if (unused.length) console.log(`не используются типы: ${unused.join(", ")}`);
 
   for (const [out, block] of targets) {
     await mkdir(path.dirname(out), { recursive: true });
     const existing = await readIfExists(out);
-    const { svg, needsLayout, removed } = mergeDrawioSvg(block, existing, { figures });
+    const { svg, needsLayout, removed } = mergeDrawioSvg(block, existing, { figures, edgeStyle });
     await writeFile(out, svg);
     if (!(await renderInPlace(out, drawio))) pending++;
     console.log(`${block.file}:${block.line} -> ${out}`);

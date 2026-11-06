@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deflateRawSync } from "node:zlib";
-import { mergeDrawioSvg, newFigureSvg, readFigure } from "./drawio.js";
+import { mergeDrawioSvg, newFigureSvg, newLinkSvg, readFigure, readLinkStyle } from "./drawio.js";
 import { parseMarkdown } from "./parse.js";
 
 const block = (body: string) =>
@@ -166,6 +166,31 @@ test("файл нового типа: одна фигура с %caption%", () =>
 
 test("пустой файл типа — ошибка", () => {
   assert.throws(() => readFigure(file("")), /нет ни одной фигуры/);
+});
+
+test("стиль стрелок получают только новые связи", () => {
+  const first = mergeDrawioSvg(block("a -> b")).svg;
+  const xml = decode(mergeDrawioSvg(block("a -> b\nb -> c"), first, { edgeStyle: "dashed=1;" }).svg);
+  assert.match(xml, /id="a&gt;b"[^>]*><mxCell style="rounded=0;html=1;endArrow=block;"/);
+  assert.match(xml, /id="b&gt;c"[^>]*><mxCell style="dashed=1;"/);
+});
+
+test("файл стиля стрелок: шаблон читается, стрелок должно быть ровно одна", () => {
+  assert.equal(readLinkStyle(newLinkSvg()), "rounded=0;html=1;endArrow=block;");
+  const arrow = (id: string) => `<mxCell id="${id}" style="dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>`;
+  assert.equal(readLinkStyle(file(arrow("x"))), "dashed=1;");
+  assert.throws(() => readLinkStyle(file("")), /ровно одна стрелка, найдено: 0/);
+  assert.throws(() => readLinkStyle(file(arrow("x") + arrow("y"))), /найдено: 2/);
+});
+
+test("стиль подписи приходит со стилем стрелки, текст образца — нет", () => {
+  assert.match(decode(newLinkSvg()), /value="подпись"/);
+  const edgeStyle = readLinkStyle(
+    file(`<mxCell id="x" value="образец" style="fontColor=#ff0000;fontSize=16;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>`),
+  );
+  const xml = decode(mergeDrawioSvg(block("a -> b: своя"), undefined, { edgeStyle }).svg);
+  assert.match(xml, /label="своя"[^>]*><mxCell style="fontColor=#ff0000;fontSize=16;"/);
+  assert.doesNotMatch(xml, /образец/);
 });
 
 test("фон по умолчанию не задаётся, ручной сохраняется", () => {

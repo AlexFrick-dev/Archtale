@@ -89,6 +89,24 @@ test("тип проверяется на kebab-case", () => {
   assert.match(block.errors[0].message, /Bad\/Type/);
 });
 
+test("тип default-link зарезервирован", () => {
+  const [block] = parseMarkdown(fence("model", "a [default-link] -> b"), "file");
+  assert.match(block.errors[0].message, /зарезервирован/);
+});
+
+test("ошибка разбора называет неверный id", () => {
+  const message = (line: string) => parseMarkdown(fence("model", line), "file")[0].errors[0].message;
+  assert.match(message('Gatekeeper "Привратник" [gk]'), /id «Gatekeeper» должен быть в kebab-case/);
+  assert.match(message("Foo -> order_flow : текст"), /id «Foo», «order_flow» должен быть/);
+});
+
+test("ошибка разбора без неверного id показывает формат", () => {
+  const message = (line: string) => parseMarkdown(fence("model", line), "file")[0].errors[0].message;
+  assert.match(message("a->b"), /ожидается/);
+  assert.match(message("a -Calls-> b"), /ожидается/);
+  assert.match(message("просто какой-то текст"), /ожидается/);
+});
+
 test("лишнее в заголовке — ошибка: старый `model flow s` не становится схемой flow молча", () => {
   const [block] = parseMarkdown(fence("model flow s", "a -> b"), "file");
   assert.match(block.errors[0].message, /лишнее: «s»/);
